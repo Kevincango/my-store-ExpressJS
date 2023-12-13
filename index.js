@@ -1,5 +1,6 @@
-const os = require('os');
 const express = require('express');
+const os = require('os');
+const { faker } = require('@faker-js/faker');
 const app = express();
 const port = 3000;
 
@@ -20,26 +21,39 @@ app.get('/', (req, res) => {
   res.send('Hello, my first server on Express');
 });
 
+function generateRandomProducts(limit = 10){
+  const products = [];
+  for(let i = 0; i < limit; i++){
+    products.push({
+    productName: faker.commerce.productName(),
+    price: parseInt(faker.commerce.price()),
+    image: faker.image.url(),
+    });
+  }
+  return products;
+}
+
 app.get('/products', (req, res) => {
-  res.json([
-    {
-      name: 'Product 1',
-      price: 1000,
-    },
-    {
-      name: 'product 2',
-      price: 2000,
-    }
-  ]);
+  const { size } = req.query;
+  const products = generateRandomProducts(size);
+  res.json(products);
 });
 
-app.get('/products/:id', (req, res)=> {
-  const { id } = req.params;
-  res.json({
-    id,
-    name: 'product 2',
-    price: 2000,
-  });
+const productsFilter = generateRandomProducts(10);
+//console.log(productsFilter);
+
+app.get('/products/example', (req, res) => {
+  res.send('Im a specifc endpoint, not dynamic');
+});
+
+app.get('/products/:name', (req, res)=> {
+  const { name } = req.params;
+  const product = productsFilter.find(p => p.productName === name);
+  if(product){
+    res.json(product);
+  }else{
+    res.status(404).send('product name not found');
+  }
 });
 
 app.get('/categories/:categoryId/products/:productId', (req, res)=> {
@@ -79,6 +93,20 @@ app.get('/categories/:id', (req, res)=> {
     res.status(404).send(`category with ID ${id} not found`);
   }
 })
+
+app.get('/users', (req, res) => {
+  const { limit, offset } = req.query;
+  if(limit && offset){
+    res.json({
+      limit,
+      offset,
+    });
+  }else{
+    res.send('There are not params');
+  }
+})
+
+
 
 
 app.listen(port, ()=> {
