@@ -16,6 +16,7 @@ function getLocalExternalIP() {
   return null;
 }
 
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello, my first server on Express');
