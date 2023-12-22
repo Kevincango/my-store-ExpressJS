@@ -17,8 +17,24 @@ class ProductsService{
     });
   }
   }
-  create(){
-
+  create(data){
+    const newProduct = {
+      id: faker.string.uuid(),
+      ...data,
+    };
+    return newProduct;
+  }
+  udpate(id, changes){
+    const index = this.products.findIndex(p => p.id === id);
+    if(index === -1){
+      throw new Error('product not found!');
+    }
+    const originalProduct = this.products[index];
+    this.products[index] = {
+      ...originalProduct,
+      ...changes,
+    };
+    return this.products[index];
   }
   allProducts(){
     return this.products;
@@ -26,8 +42,15 @@ class ProductsService{
   product(id){
     return this.products.find(p => p.id === id);
   }
-  delete(){
-
+  delete(id){
+    const index = this.products.findIndex(p => p.id === id);
+    if(index === -1){
+      throw new Error('Product not found!');
+    }
+    return {
+      message: 'Delete product succesful',
+      data: this.products.splice(index, 1),
+  }
   }
 }
 
