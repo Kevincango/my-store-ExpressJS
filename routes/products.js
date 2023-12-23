@@ -4,8 +4,8 @@ const service = new ProductsService();
 const router = express.Router();
 
 
-router.get('/', (req, res) => {
-  const products = service.allProducts();
+router.get('/', async (req, res) => {
+  const products = await service.allProducts();
   res.json(products);
 });
 
@@ -13,28 +13,32 @@ router.get('/example', (req, res) => {
   res.send('Im a specifc endpoint, not dynamic');
 });
 
-router.get('/:id', (req, res)=> {
+router.get('/:id', async (req, res)=> {
   const { id } = req.params;
-  const product = service.product(id);
+  const product = await service.product(id);
   product ? res.status(200).json(product) : res.status(404).json({message: 'product name not found'});
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
-  const newProduct = service.create(body);
+  const newProduct = await service.create(body);
   res.status(201).json(newProduct);
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params
-  const body = req.body;
-  const updateProduct = service.udpate(id, body);
-  res.status(201).json(updateProduct);
+router.patch('/:id', async (req, res) => {
+  try{
+    const { id } = req.params
+    const body = req.body;
+    const updateProduct = await service.udpate(id, body);
+    res.status(201).json(updateProduct);
+  }catch(err){
+    res.status(404).send(err.message);
+  }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  const deleteProduct = service.delete(id);
+  const deleteProduct = await service.delete(id);
   res.status(200).json(deleteProduct);
 });
 
