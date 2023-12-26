@@ -17,7 +17,7 @@ router.get('/:id', async (req, res, next)=> {
   try{
     const { id } = req.params;
     const product = await service.product(id);
-    product ? res.status(200).json(product) : res.status(404).json({message: 'product name not found'});
+   res.json(product);
   }catch(err){
     next(err);
   }
@@ -29,14 +29,14 @@ router.post('/', async (req, res) => {
   res.status(201).json(newProduct);
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req, res, next) => {
   try{
     const { id } = req.params
     const body = req.body;
     const updateProduct = await service.udpate(id, body);
-    res.status(201).json(updateProduct);
+    res.json(updateProduct);
   }catch(err){
-    res.status(404).send(err.message);
+    next(err);
   }
 });
 

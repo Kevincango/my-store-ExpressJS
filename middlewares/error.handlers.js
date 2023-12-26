@@ -8,4 +8,13 @@ function errorHandler(err, req, res, next){
     stack: err.stack,
   })
 }
-module.exports = { logErrors, errorHandler };
+
+function boomErrorsHandler(err, req, res, next){
+  if(err.isBoom){
+    const {output} = err;
+    res.status(output.statusCode).json(output.payload);
+  }else{
+    next(err);
+  }
+}
+module.exports = { logErrors, errorHandler, boomErrorsHandler };
