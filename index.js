@@ -4,6 +4,8 @@ const { logErrors, errorHandler, boomErrorsHandler } = require('./middlewares/er
 const app = express();
 const port = 3000;
 const os = require('os');
+const cors = require('cors');
+app.use(cors());
 
 function getLocalExternalIP() {
   const networkInterfaces = os.networkInterfaces();
