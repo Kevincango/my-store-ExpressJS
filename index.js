@@ -5,7 +5,18 @@ const app = express();
 const port = 3000;
 const os = require('os');
 const cors = require('cors');
-app.use(cors());
+
+const whiteList = ['http://127.0.0.1:5500'];
+const options = {
+  origin: (origin, callback) => {
+    if(whiteList.includes(origin)){
+      callback(null, true);
+    }else{
+      callback(new Error('Connection not allowed!'));
+    }
+  }
+}
+app.use(cors(options));
 
 function getLocalExternalIP() {
   const networkInterfaces = os.networkInterfaces();
