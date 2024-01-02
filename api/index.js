@@ -2,9 +2,10 @@ const express = require('express');
 const routerApi = require('./routes/index');
 const { logErrors, errorHandler, boomErrorsHandler } = require('./middlewares/error.handlers');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const os = require('os');
 const cors = require('cors');
+app.use(express.json());
 
 const whiteList = ['http://127.0.0.1:5500'];
 const options = {
@@ -30,13 +31,11 @@ function getLocalExternalIP() {
   return null;
 }
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send('Hello, my first server on Express');
 });
 
-app.get('/new-route', (req, res) => {
+app.get('/api/new-route', (req, res) => {
   res.send('This is jus a new route test');
 });
 
