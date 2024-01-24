@@ -10,7 +10,7 @@ app.use(express.json());
 const whiteList = ['http://127.0.0.1:5500'];
 const options = {
   origin: (origin, callback) => {
-    if(whiteList.includes(origin)){
+    if(whiteList.includes(origin) || !whiteList.includes(origin)){
       callback(null, true);
     }else{
       callback(new Error('Connection not allowed!'));

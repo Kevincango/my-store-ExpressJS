@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const getConnection = require('../libs/postgres');
 const  boom = require('@hapi/boom');
 
 class ProductsService{
@@ -64,6 +65,11 @@ class ProductsService{
       message: 'Delete product succesful',
       data: this.products.splice(index, 1),
   }
+  }
+  async find(){
+    const client = await getConnection();
+    const rta = await client.query('SELECT * FROM tasks');
+    return rta.rows;
   }
 }
 

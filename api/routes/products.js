@@ -15,6 +15,15 @@ router.get('/example', (req, res) => {
   res.send('Im a specifc endpoint, not dynamic');
 });
 
+router.get('/users', async (re, res, next) => {
+  try{
+    const users = await service.find();
+    res.json(users);
+  }catch(error){
+    next(error);
+  }
+})
+
 router.get('/:id', validatorHandler(getProductSchema, 'params'), async (req, res, next)=> {
   try{
     const { id } = req.params;
