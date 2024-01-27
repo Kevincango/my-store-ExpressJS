@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const sequelize = require('../libs/sequelize');
+const { models } = require('../libs/sequelize');
 const  boom = require('@hapi/boom');
 
 class ProductsService{
@@ -67,12 +67,8 @@ class ProductsService{
   }
   }
   async find(){
-    const query = 'SELECT * FROM tasks';
-    const [data, metadata] = await sequelize.query(query);
-    return {
-      data,
-      metadata
-    };
+    const rta = await models.User.findAll();
+    return rta;
   }
 }
 
