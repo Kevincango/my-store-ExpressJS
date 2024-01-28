@@ -21,23 +21,13 @@ class ProductsService{
   }
   }
   async create(data){
-    const newProduct = {
-      id: faker.string.uuid(),
-      ...data,
-    };
-    return newProduct;
+    const newUser = await models.User.create(data);
+    return newUser;
   }
   async udpate(id, changes){
-    const index = this.products.findIndex(p => p.id === id);
-    if(index === -1){
-      throw boom.notFound('Product not found');
-    }
-    const originalProduct = this.products[index];
-    this.products[index] = {
-      ...originalProduct,
-      ...changes,
-    };
-    return this.products[index];
+    const user = await this.product(id);
+    const rta = await user.update(changes);
+    return rta;
   }
   async allProducts(){
     return new Promise((resolve) => {
@@ -47,24 +37,16 @@ class ProductsService{
     });
   }
   async product(id){
-    const product = this.products.find(p => p.id === id);
-    if(!product){
-      throw boom.notFound('Product not found');
+    const user = await models.User.findByPk(id);
+    if(!user){
+      throw boom.notFound('user not found');
     }
-    if(product.isBlock){
-      throw boom.conflict('product is block');
-    }
-    return product;
+    return user;
   }
   async delete(id){
-    const index = this.products.findIndex(p => p.id === id);
-    if(index === -1){
-      throw new Error('Product not found!');
-    }
-    return {
-      message: 'Delete product succesful',
-      data: this.products.splice(index, 1),
-  }
+    const user = await this.product(id);
+    await user.destroy();
+    return { id };
   }
   async find(){
     const rta = await models.User.findAll();
