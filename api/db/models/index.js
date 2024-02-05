@@ -5,6 +5,7 @@ function setupModels(sequelize){
   User.init(userSchema, User.config(sequelize));
   Customer.init(customerSchema, Customer.config(sequelize));
 
+  User.assocciate(sequelize.models);
   Customer.associate(sequelize.models);
 }
 
