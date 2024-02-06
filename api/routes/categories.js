@@ -1,43 +1,58 @@
 const express = require('express');
+const CategoryService = require('../services/category.service');
+const validatorHandler = require('../middlewares/validatorHandler');
+const { createCategorySchema, updateCategorySchema, getCategorySchema} = require('../schemes/category.schema');
 const router = express.Router();
+const service = new CategoryService();
 
-const categories = [
-  {
-    id: 1,
-    name: 'electronics'
-  },
-  {
-    id: 2,
-    name: 'clothes'
-  },
-  {
-    id: 3,
-    name: 'healthcare'
+
+router.get('/', async (req, res, next)=> {
+  try{
+    const categories = await service.find();
+    res.json(categories);
+  }catch(error){
+    next(error);
   }
-];
-
-router.get('/:categoryId/products/:productId', (req, res)=> {
-  const { categoryId, productId } = req.params;
-  res.json({
-    categoryId,
-    productId
-  });
 });
 
-
-
-router.get('/', (req, res) => {
-  res.json(categories);
-});
-
-router.get('/:id', (req, res)=> {
-  const { id } = req.params;
-  const category = categories.find(c => c.id == id);
-
-  if(category){
+router.get('/:id', validatorHandler(getCategorySchema, 'params'),async (req, res, next) => {
+  try{
+    const { id } = req.params;
+    const category = await service.findOne(id);
     res.json(category);
-  }else{
-    res.status(404).send(`category with ID ${id} not found`);
+  }catch(error){
+    next(error);
+  }
+});
+
+router.post('/', validatorHandler(createCategorySchema, 'body'), async (req,res,next) => {
+  try{
+    const body = req.body;
+    const newCategory = await service.create(body);
+    res.status(201).json(newCategory);
+  }catch(error){
+    next(error);
+  }
+});
+
+router.patch('/:id', validatorHandler(getCategorySchema, 'params') ,validatorHandler(updateCategorySchema, 'body'), async(req, res, next) => {
+  try{
+    const { id } = req.params;
+    const body = req.body;
+    const updateCategory = await service.update(id, body);
+    res.json(updateCategory);
+  }catch(error){
+    next(error);
+  }
+});
+
+router.delete('/:id', validatorHandler(getCategorySchema, 'params'), async (req,res,next) => {
+  try{
+    const { id } = req.params;
+    const deleteCategory = await service.delete(id);
+    res.status(201).json(deleteCategory);
+  }catch(error){
+    next(error);
   }
 })
 
