@@ -21,8 +21,8 @@ class ProductsService{
   }
   }
   async create(data){
-    const newUser = await models.User.create(data);
-    return newUser;
+    const newProduct = await models.Product.create(data);
+    return newProduct;
   }
   async udpate(id, changes){
     const user = await this.product(id);
@@ -30,11 +30,10 @@ class ProductsService{
     return rta;
   }
   async allProducts(){
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.products);
-      },5000);
+    const products = await models.Product.findAll({
+      include: ['category']
     });
+    return products;
   }
   async product(id){
     const user = await models.User.findByPk(id);
