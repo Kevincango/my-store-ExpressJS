@@ -29,10 +29,16 @@ class ProductsService{
     const rta = await user.update(changes);
     return rta;
   }
-  async allProducts(){
-    const products = await models.Product.findAll({
-      include: ['category']
-    });
+  async allProducts(query){
+    const options = {
+      include: ['category'],
+    };
+    const { limit, offset } = query;
+    if(limit && offset){
+      options.limit = limit;
+      options.offset = offset;
+    }
+    const products = await models.Product.findAll(options);
     return products;
   }
   async product(id){
